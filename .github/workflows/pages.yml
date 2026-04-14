@@ -4,10 +4,9 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: read
-	https: write
-
-id-token: write
+  contents: write
+  pages: write
+  id-token: write
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -15,10 +14,11 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
-      with:
-        pages-source: build-artifact
-        pages-branch: main
+      - uses: actions/checkout@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
