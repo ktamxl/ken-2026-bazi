@@ -4,9 +4,10 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: read
+	https: write
+
+id-token: write
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -14,21 +15,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm install -g pnpm
-      - name: Install dependencies
-        run: pnpm install --prefer-offline
-        env:
-          CI: true
-      - name: Build
-        run: pnpm build
-        env:
-          CI: true
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+      with:
+        pages-source: build-artifact
+        pages-branch: main
